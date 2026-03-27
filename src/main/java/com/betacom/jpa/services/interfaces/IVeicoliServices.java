@@ -14,4 +14,6 @@ public interface IVeicoliServices {
 	
 	List<VeicoloDTO> find(Integer id, Integer tipo, String categoria, 
 			String alimentazione, Integer colore, Integer marca, String targa, Integer porte);
+	
+	VeicoloDTO getById(Integer id) throws Exception;
 }

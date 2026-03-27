@@ -82,6 +82,8 @@ public class VeicoloImpl  implements IVeicoliServices{
 		
 		if (req.getPrezzo() == null)
 			throw new AcademyException(msgS.get("prezzo_invalid"));
+		v.setPrezzo(req.getPrezzo());
+		
 		v.setDataInserimento(LocalDate.now());
 		return veR.save(v).getId();
 		
@@ -145,6 +147,14 @@ public class VeicoloImpl  implements IVeicoliServices{
 		
 		
 		return veiM.builVeicoloDTO(lV);
+	}
+
+	@Override
+	public VeicoloDTO getById(Integer id) throws Exception {
+		Veicolo v = veR.findById(id)
+				.orElseThrow(() -> new AcademyException(msgS.get("veicolo_ntfnd")));
+		
+		return veiM.builVeicoloDTO(v);
 	}
 
 }
