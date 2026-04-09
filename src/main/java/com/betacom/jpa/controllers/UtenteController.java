@@ -74,11 +74,16 @@ public class UtenteController {
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<Object> list(){
+	public ResponseEntity<Object> list(
+			@RequestParam (required = false)  String userName,
+			@RequestParam (required = false)  String nome,
+			@RequestParam (required = false)  String cognome,
+			@RequestParam (required = false)  String role
+			){
 		Object r = new Object();
 		HttpStatus status = HttpStatus.OK;
 		try {
-			r= utS.list();
+			r= utS.list(userName, nome, cognome, role);
 		} catch (Exception e) {
 			r=e.getMessage();
 			status = HttpStatus.BAD_REQUEST;
@@ -115,7 +120,68 @@ public class UtenteController {
 		return ResponseEntity.status(status).body(r);
 		
 	}
+
+	@GetMapping("/sendValidation")
+	public ResponseEntity<Resp> sendValidation (@RequestParam (required = true)  String id){
+		Resp r = new Resp();
+		HttpStatus status = HttpStatus.OK;
+		try {
+			utS.sendValidation(id);
+			r.setMsg(msgS.get("rest_created"));
+		} catch (Exception e) {
+			r.setMsg(e.getMessage());
+			status = HttpStatus.BAD_REQUEST; 
+		}
+		return ResponseEntity.status(status).body(r);
 		
+	}
+
+
+	@GetMapping("/emailValidate")
+	public ResponseEntity<Resp> emailValidate (@RequestParam (required = true)  String id){
+		Resp r = new Resp();
+		HttpStatus status = HttpStatus.OK;
+		try {
+			utS.emailValidate(id);
+			r.setMsg(msgS.get("rest_created"));
+		} catch (Exception e) {
+			r.setMsg(e.getMessage());
+			status = HttpStatus.BAD_REQUEST; 
+		}
+		return ResponseEntity.status(status).body(r);
+		
+	}
+
+	@GetMapping("/sendResetPassword")
+	public ResponseEntity<Resp> sendResetPssword (@RequestParam (required = true)  String id){
+		Resp r = new Resp();
+		HttpStatus status = HttpStatus.OK;
+		try {
+			utS.sendResetPssword(id);
+			r.setMsg(msgS.get("rest_created"));
+		} catch (Exception e) {
+			r.setMsg(e.getMessage());
+			status = HttpStatus.BAD_REQUEST; 
+		}
+		return ResponseEntity.status(status).body(r);
+		
+	}
+
+	@PutMapping("/resetPassword")
+	public ResponseEntity<Resp> resetPssword(@RequestBody(required = true)  ChangePwdReq req){
+		Resp r = new Resp();
+		HttpStatus status = HttpStatus.OK;
+		try {
+			utS.resetPssword(req);
+			r.setMsg(msgS.get("rest_updated"));
+		} catch (Exception e) {
+			r.setMsg(e.getMessage());
+			status = HttpStatus.BAD_REQUEST;
+		}
+		return ResponseEntity.status(status).body(r);		
+	}
+
+	
 	@PutMapping("/changePwd")
 	public ResponseEntity<Resp> changePwd(@RequestBody(required = true)  ChangePwdReq req){
 		Resp r = new Resp();

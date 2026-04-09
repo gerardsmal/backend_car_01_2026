@@ -30,7 +30,7 @@ public class VeicoloMapper {
 				.modello(v.getModello())
 				.annoProduzione(v.getAnnoProduzione())
 				.prezzo(v.getPrezzo())
-				.image(uplS.buildUrl(v.getImage()))
+				.image(v.getImage() == null ? null : uplS.buildUrl(v.getImage()))
 				.dataInserimento(v.getDataInserimento())
 				.tipoVeicolo(tipoVeicoloToDTO(v.getTipoVeicolo()))
 				.categoria(keyStringToDTO(v.getCategorie()))

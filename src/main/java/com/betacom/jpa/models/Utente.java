@@ -32,6 +32,12 @@ public class Utente {
 	private String comune;
 	private String cap;
 	
+	@Column (name="email_validation",
+			nullable= false,
+			columnDefinition = "BOOLEAN DEFAULT false")
+	private Boolean validate;
+	
+	
 	@Column (name="data_creazione")
 	private LocalDate dataCreazione;
 

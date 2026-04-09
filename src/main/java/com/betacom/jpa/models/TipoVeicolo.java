@@ -29,6 +29,8 @@ public class TipoVeicolo {
 	
 	@Column (nullable = false, length = 50)
 	private String pattern;
+	
+	private boolean status;
 
 	@OneToMany(
 			mappedBy = "tipoVeicolo",

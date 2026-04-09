@@ -4,11 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.betacom.jpa.dto.input.LoginReq;
+import com.betacom.jpa.dto.input.MailReq;
 import com.betacom.jpa.dto.input.UtenteReq;
 import com.betacom.jpa.dto.input.ChangePwdReq;
 import com.betacom.jpa.dto.output.LoginDTO;
@@ -16,6 +18,7 @@ import com.betacom.jpa.dto.output.UtenteDTO;
 import com.betacom.jpa.exceptions.AcademyException;
 import com.betacom.jpa.models.Utente;
 import com.betacom.jpa.repositories.IUtenteRepository;
+import com.betacom.jpa.services.interfaces.IMailServices;
 import com.betacom.jpa.services.interfaces.IMessageServices;
 import com.betacom.jpa.services.interfaces.IUtenteServices;
 
@@ -28,9 +31,16 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class UtenteImpl implements IUtenteServices{
 
+	@Value("${mail.validation}")
+	private String validationURL;
+
+	@Value("${mail.resetPassword}")
+	private String resetPasswordURL;
+	
 	private final IUtenteRepository utR;
 	private final IMessageServices msgS;
 	private final PasswordEncoder encoder;
+	private final IMailServices  mailS;
 	
 	@Transactional (rollbackFor = Exception.class)
 	@Override
@@ -56,20 +66,26 @@ public class UtenteImpl implements IUtenteServices{
 		acc.setDataCreazione(LocalDate.now());
 		
 		acc.setSesso(req.getSesso());
+		acc.setValidate(false);
 		utR.save(acc);
+		sendMailValidation(acc);
 		
 	}
 	
 	@Transactional (rollbackFor = Exception.class)
 	@Override
 	public void update(UtenteReq req) throws Exception {
-		log.debug("update {}", req);	
+		log.debug("update {}", req);
+		boolean isMailChanged = false;
 		Utente ut = utR.findById(req.getUserName())
 				.orElseThrow(() -> new AcademyException(msgS.get("user_ntfnd")));
 		if (req.getPwd() != null)
 			ut.setPwd(encoder.encode(req.getPwd()));
-		if (req.getEmail() != null)
+		if (req.getEmail() != null) {
 			ut.setEmail(req.getEmail());
+			ut.setValidate(false);
+			isMailChanged = true;
+		}
 		if (req.getRole() != null)
 			ut.setRole(Roles.valueOf(req.getRole()));
 		if (req.getNome() != null)
@@ -88,7 +104,8 @@ public class UtenteImpl implements IUtenteServices{
 			ut.setSesso(req.getSesso());
 		
 		utR.save(ut);
-		
+		if (isMailChanged)
+			sendMailValidation(ut);
 	}
 	
 	@Transactional (rollbackFor = Exception.class)
@@ -102,9 +119,13 @@ public class UtenteImpl implements IUtenteServices{
 	}
 
 	@Override
-	public List<UtenteDTO> list() {
-		log.debug("list");
-		List<Utente> lU = utR.findAll();
+	public List<UtenteDTO> list(String userName, String nome, String cognome, String role) {
+		log.debug("list {}/{}/{}/{}", userName, nome, cognome, role);
+		Roles ro = null;
+		if (role != null)  ro = Roles.valueOf(role.trim().toUpperCase());
+		
+		List<Utente> lU = utR.selectByFilter(userName, nome, cognome, ro);
+		
 		return lU.stream()
 				.map((u -> UtenteDTO.builder()
 						.userName(u.getUserName())
@@ -117,6 +138,7 @@ public class UtenteImpl implements IUtenteServices{
 						.role(u.getRole().toString())
 						.sesso(u.getSesso())
 						.telefono(u.getTelefono())
+						.isValidate(u.getValidate())
 						.build())
 						).toList();
 						
@@ -139,6 +161,7 @@ public class UtenteImpl implements IUtenteServices{
 				.role(u.getRole().toString())
 				.sesso(u.getSesso())
 				.telefono(u.getTelefono())
+				.isValidate(u.getValidate())
 				.build();
 	}
 
@@ -153,9 +176,11 @@ public class UtenteImpl implements IUtenteServices{
 		return LoginDTO.builder()
 				.id(ut.getUserName())
 				.role(ut.getRole().toString())
+				.mailValidate(ut.getValidate())
 				.build();
 	}
-
+	
+	@Transactional (rollbackFor = Exception.class)
 	@Override
 	public void changePwd(ChangePwdReq req) throws Exception {
 		log.debug("changePwd {}", req);
@@ -176,4 +201,93 @@ public class UtenteImpl implements IUtenteServices{
 		utR.save(ut);
 	}
 
+	@Override
+	public void sendValidation(String userName) throws Exception {
+		log.debug("sendValidation {}", userName);
+
+		Utente ut = utR.findById(userName)
+				.orElseThrow(() -> new AcademyException(msgS.get("user_ntfnd")));
+		sendMailValidation(ut);
+
+	}
+
+	@Transactional (rollbackFor = Exception.class)
+	@Override
+	public void emailValidate(String userName) throws Exception {
+		log.debug("emailValidate {}", userName);
+		
+		Utente ut = utR.findById(userName)
+				.orElseThrow(() -> new AcademyException(msgS.get("user_ntfnd")));	
+		ut.setValidate(true);
+		utR.save(ut);
+		
+	}
+
+
+	@Override
+	public void sendResetPssword(String userName) throws Exception {
+		log.debug("sendResetPssword {}", userName);
+		
+		Utente ut = utR.findById(userName)
+				.orElseThrow(() -> new AcademyException(msgS.get("user_ntfnd")));	
+		StringBuilder body = new StringBuilder();
+		body.append("<h2>Vendita Veicoli</h2><br><br>");
+		body.append("Buongiorno ");
+		body.append(ut.getNome());
+		body.append("<br><br>");
+		body.append("<br>Per inizializzare la tua password va sull'URL");
+		body.append("<br><a>"+ resetPasswordURL  + ut.getUserName()+ "</a><br>");
+		body.append("<br><br>Il team Vendita Veicoli <br><br>");
+
+		sendMail(ut, "Validazione email", body.toString());
+	}
+
+
+	@Override
+	public void resetPssword(ChangePwdReq req) throws Exception {
+		log.debug("resetPssword {}", req);
+		Utente ut = utR.findById(req.getUserName())
+				.orElseThrow(() -> new AcademyException(msgS.get("user_ntfnd")));
+
+		Optional.ofNullable(req.getNewPwd())
+			.ifPresentOrElse(pwd -> {
+				ut.setPwd(encoder.encode(req.getNewPwd()));
+			}, () -> { 
+				throw new RuntimeException(msgS.get("user_no_newpwd"));
+			});
+		
+		utR.save(ut);
+
+		
+	}
+
+	
+	private void sendMailValidation(Utente acc) throws Exception{
+		StringBuilder body = new StringBuilder();
+		body.append("<h2>Vendita Veicoli</h2><br><br>");
+		body.append("Buongiorno ");
+		body.append(acc.getNome());
+		body.append("<br><br>");
+		body.append("<br>Per validare tuo mail va sull'URL");
+		body.append("<br><a>"+ validationURL  + acc.getUserName()+ "</a><br>");
+		body.append("<br><br>Il team Vendita Veicoli <br><br>");
+
+		sendMail(acc, "Validazione email", body.toString());
+	}
+
+	private void sendMail(Utente account, String oggetto, String body) throws Exception{
+		
+		mailS.sendMail(MailReq.builder()
+				.to(account.getEmail())
+				.oggetto(oggetto)
+				.body(body)
+				.build()
+				);
+		
+
+	}
+
+
+
+	
 }

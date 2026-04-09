@@ -10,4 +10,5 @@ import lombok.Setter;
 public class LoginDTO {
 	private String id;
 	private String role;
+	private Boolean mailValidate;
 }

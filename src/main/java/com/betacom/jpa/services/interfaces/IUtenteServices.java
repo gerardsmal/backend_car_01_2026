@@ -15,8 +15,12 @@ public interface IUtenteServices {
 	void update(UtenteReq req) throws Exception;
 	void delete(String userName) throws Exception;
 	void changePwd(ChangePwdReq req) throws Exception;
+	void sendValidation(String userName) throws Exception;
+	void emailValidate(String userName) throws Exception;
+	void sendResetPssword(String userName) throws Exception;
+	void resetPssword(ChangePwdReq req) throws Exception;
 	
 	LoginDTO login(LoginReq req) throws Exception;
-	List<UtenteDTO> list();
+	List<UtenteDTO> list(String userName, String nome, String cognome, String role);
 	UtenteDTO getByUserName(String userName) throws Exception;
 }

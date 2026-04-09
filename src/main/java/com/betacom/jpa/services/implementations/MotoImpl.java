@@ -30,7 +30,7 @@ public class MotoImpl implements IMotoServices{
 	private final IVeicoliServices  veS;
 	private final IVeicoloRepository  veR;
 	
-	private static String REGULAR_TARGA = "^[A-HJ-NPR-Z]{2}\\d{5}$";
+	private static String REGULAR_TARGA = "^[A-Z]{2}\\s?[0-9]{5}$";
 	
 	@Transactional (rollbackFor = AcademyException.class)
 	@Override

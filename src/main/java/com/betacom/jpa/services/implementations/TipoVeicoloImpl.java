@@ -38,7 +38,9 @@ public class TipoVeicoloImpl implements ITipoVeicoloServices{
 	@Override
 	public List<TipoVeicoloDTO> list() {
 		log.debug("List");
-		List<TipoVeicolo> lT = tveiR.findAll();
+//		List<TipoVeicolo> lT = tveiR.findAll();
+		List<TipoVeicolo> lT = tveiR.findByStatus(true);
+
 		return tipoVeicoloToDTO(lT);	
 	}
 

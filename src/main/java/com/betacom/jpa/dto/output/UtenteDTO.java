@@ -21,5 +21,6 @@ public class UtenteDTO {
 	private String via;
 	private String comune;
 	private String cap;
- 
+	private Boolean isValidate;
+	
 }
