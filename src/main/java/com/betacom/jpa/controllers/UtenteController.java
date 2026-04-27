@@ -30,6 +30,8 @@ public class UtenteController {
 	private final IUtenteServices utS;
 	private final IMessageServices msgS;
 	
+
+	
 	@PostMapping("/public/create")
 	public ResponseEntity<Resp> create(@RequestBody(required = true)  UtenteReq req){
 		Resp r = new Resp();
@@ -106,14 +108,12 @@ public class UtenteController {
 		
 	}
 	
-
-
-	@GetMapping("/public/sendValidation")
-	public ResponseEntity<Resp> sendValidation (@RequestParam (required = true)  String id){
+	@GetMapping("/public/sendResetPassword")
+	public ResponseEntity<Resp> sendResetPssword (@RequestParam (required = true)  String id){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
 		try {
-			utS.sendValidation(id);
+			utS.sendResetPssword(id);
 			r.setMsg(msgS.get("rest_created"));
 		} catch (Exception e) {
 			r.setMsg(e.getMessage());
@@ -122,6 +122,8 @@ public class UtenteController {
 		return ResponseEntity.status(status).body(r);
 		
 	}
+
+
 
 
 	@GetMapping("/publi/emailValidate")
