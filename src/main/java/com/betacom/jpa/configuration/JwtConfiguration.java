@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
@@ -61,6 +63,10 @@ public class JwtConfiguration {
     @Bean
     JwtDecoder jwtDecoder(@Value("${app.jwt.secret}") String secret) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-        return NimbusJwtDecoder.withSecretKey(key).build();
+
+        return NimbusJwtDecoder
+            .withSecretKey(key)
+            .macAlgorithm(MacAlgorithm.HS512)    // algoritmo di decod -> deve essere identica al sevizio
+            .build();
     }
 }

@@ -45,7 +45,7 @@ public class AuthController {
             
             String token = jwtService.generateAccessToken(authentication);
             r = LoginDTO.builder()
-            		.tokenType(token)
+            		.accessToken(token)
             		.tokenType("Bearer")
             		.build();
             
@@ -61,12 +61,12 @@ public class AuthController {
     
     
     
-	@PostMapping("/me")
-	public ResponseEntity<Object> me (@RequestBody(required = true)  LoginReq req){
+	@GetMapping("/me")
+	public ResponseEntity<Object> me (@RequestParam(required = true)  String id){
 		Object r = new Object();
 		HttpStatus status = HttpStatus.OK;
 		try {
-			r= utS.login(req);
+			r= utS.me(id);
 		} catch (Exception e) {
 			r = new Resp();
 			((Resp)r).setMsg(e.getMessage());
