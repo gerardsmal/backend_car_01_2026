@@ -1,6 +1,7 @@
 package com.betacom.jpa.dto.output;
 
-import enums.Roles;
+import com.betacom.jpa.enums.Roles;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

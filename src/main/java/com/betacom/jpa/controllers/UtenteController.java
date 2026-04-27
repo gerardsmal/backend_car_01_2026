@@ -30,7 +30,7 @@ public class UtenteController {
 	private final IUtenteServices utS;
 	private final IMessageServices msgS;
 	
-	@PostMapping("/create")
+	@PostMapping("/public/create")
 	public ResponseEntity<Resp> create(@RequestBody(required = true)  UtenteReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -45,7 +45,7 @@ public class UtenteController {
 	}
 
 	
-	@PutMapping("/update")
+	@PutMapping("/user/update")
 	public ResponseEntity<Resp> update(@RequestBody(required = true)  UtenteReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -59,7 +59,7 @@ public class UtenteController {
 		return ResponseEntity.status(status).body(r);		
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/admin/delete/{id}")
 	public ResponseEntity<Resp> delete(@PathVariable(required = true)  String id){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -73,7 +73,7 @@ public class UtenteController {
 		return ResponseEntity.status(status).body(r);		
 	}
 
-	@GetMapping("/list")
+	@GetMapping("/admin/list")
 	public ResponseEntity<Object> list(
 			@RequestParam (required = false)  String userName,
 			@RequestParam (required = false)  String nome,
@@ -92,7 +92,7 @@ public class UtenteController {
 		
 	}
 	
-	@GetMapping("/findByUserName")
+	@GetMapping("/user/findByUserName")
 	public ResponseEntity<Object> findById (@RequestParam (required = true)  String id){
 		Object r = new Object();
 		HttpStatus status = HttpStatus.OK;
@@ -106,22 +106,9 @@ public class UtenteController {
 		
 	}
 	
-	@PostMapping("/login")
-	public ResponseEntity<Object> login (@RequestBody(required = true)  LoginReq req){
-		Object r = new Object();
-		HttpStatus status = HttpStatus.OK;
-		try {
-			r= utS.login(req);
-		} catch (Exception e) {
-			r = new Resp();
-			((Resp)r).setMsg(e.getMessage());
-			status = HttpStatus.BAD_REQUEST; 
-		}
-		return ResponseEntity.status(status).body(r);
-		
-	}
 
-	@GetMapping("/sendValidation")
+
+	@GetMapping("/public/sendValidation")
 	public ResponseEntity<Resp> sendValidation (@RequestParam (required = true)  String id){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -137,7 +124,7 @@ public class UtenteController {
 	}
 
 
-	@GetMapping("/emailValidate")
+	@GetMapping("/publi/emailValidate")
 	public ResponseEntity<Resp> emailValidate (@RequestParam (required = true)  String id){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -152,22 +139,9 @@ public class UtenteController {
 		
 	}
 
-	@GetMapping("/sendResetPassword")
-	public ResponseEntity<Resp> sendResetPssword (@RequestParam (required = true)  String id){
-		Resp r = new Resp();
-		HttpStatus status = HttpStatus.OK;
-		try {
-			utS.sendResetPssword(id);
-			r.setMsg(msgS.get("rest_created"));
-		} catch (Exception e) {
-			r.setMsg(e.getMessage());
-			status = HttpStatus.BAD_REQUEST; 
-		}
-		return ResponseEntity.status(status).body(r);
-		
-	}
 
-	@PutMapping("/resetPassword")
+
+	@PutMapping("/public/resetPassword")
 	public ResponseEntity<Resp> resetPssword(@RequestBody(required = true)  ChangePwdReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -182,7 +156,7 @@ public class UtenteController {
 	}
 
 	
-	@PutMapping("/changePwd")
+	@PutMapping("/user/changePwd")
 	public ResponseEntity<Resp> changePwd(@RequestBody(required = true)  ChangePwdReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;

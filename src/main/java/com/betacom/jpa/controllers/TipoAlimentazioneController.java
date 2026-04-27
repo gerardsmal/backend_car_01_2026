@@ -28,7 +28,7 @@ public class TipoAlimentazioneController {
 	private final IMessageServices   msgS;
 	
 	
-	@PostMapping("/create")
+	@PostMapping("/admin/create")
 	public ResponseEntity<Resp> create(@RequestBody(required = true)  KeyStringReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -43,7 +43,7 @@ public class TipoAlimentazioneController {
 		return ResponseEntity.status(status).body(r);		
 	}
 
-	@GetMapping("/list")
+	@GetMapping("/public/list")
 	public ResponseEntity<Object> list(@RequestParam (required = false)  String pattern){
 		Object r = new Object();
 		HttpStatus status = HttpStatus.OK;

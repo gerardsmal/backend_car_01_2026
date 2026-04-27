@@ -29,7 +29,7 @@ public class TipoVeicoloController {
 	private final ITipoVeicoloServices tipoS;
 	
 	
-	@PostMapping("/create")
+	@PostMapping("/admin/create")
 	public ResponseEntity<Resp> create(@RequestBody(required = true)  TipoVeicoloReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -43,7 +43,7 @@ public class TipoVeicoloController {
 		return ResponseEntity.status(status).body(r);		
 	}
 
-	@GetMapping("/list")
+	@GetMapping("/public/list")
 	public ResponseEntity<Object> list(){
 		Object r = new Object();
 		HttpStatus status = HttpStatus.OK;

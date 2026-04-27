@@ -28,7 +28,7 @@ public class ColoreController {
 	private final IMessageServices   msgS;
 	
 	
-	@PostMapping("/create")
+	@PostMapping("/admin/create")
 	public ResponseEntity<Resp> create(@RequestBody(required = true)  KeyIntegerReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -42,7 +42,7 @@ public class ColoreController {
 		return ResponseEntity.status(status).body(r);		
 	}
 
-	@GetMapping("/list")
+	@GetMapping("/public/list")
 	public ResponseEntity<Object> list(){
 		Object r = new Object();
 		HttpStatus status = HttpStatus.OK;

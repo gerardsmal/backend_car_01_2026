@@ -4,10 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @Builder
-public class LoginDTO {
-	 private String accessToken;
-	 private String tokenType;
+public class MeDTO {
+	private String id;
+	private String role;
+	private Boolean mailValidate;
 }

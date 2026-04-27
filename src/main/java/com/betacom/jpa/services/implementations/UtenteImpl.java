@@ -13,8 +13,9 @@ import com.betacom.jpa.dto.input.LoginReq;
 import com.betacom.jpa.dto.input.MailReq;
 import com.betacom.jpa.dto.input.UtenteReq;
 import com.betacom.jpa.dto.input.ChangePwdReq;
-import com.betacom.jpa.dto.output.LoginDTO;
+import com.betacom.jpa.dto.output.MeDTO;
 import com.betacom.jpa.dto.output.UtenteDTO;
+import com.betacom.jpa.enums.Roles;
 import com.betacom.jpa.exceptions.AcademyException;
 import com.betacom.jpa.models.Utente;
 import com.betacom.jpa.repositories.IUtenteRepository;
@@ -22,7 +23,6 @@ import com.betacom.jpa.services.interfaces.IMailServices;
 import com.betacom.jpa.services.interfaces.IMessageServices;
 import com.betacom.jpa.services.interfaces.IUtenteServices;
 
-import enums.Roles;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -166,14 +166,14 @@ public class UtenteImpl implements IUtenteServices{
 	}
 
 	@Override
-	public LoginDTO login(LoginReq req) throws Exception {
-		log.debug("delete {}", req);
+	public MeDTO login(LoginReq req) throws Exception {
+		log.debug("login {}", req);
 		Utente ut = utR.findById(req.getUserName())
 				.orElseThrow(() -> new AcademyException(msgS.get("login_invalid")));
 		if (!encoder.matches(req.getPwd(), ut.getPwd()))
 			throw new AcademyException(msgS.get("login_invalid"));
 		
-		return LoginDTO.builder()
+		return MeDTO.builder()
 				.id(ut.getUserName())
 				.role(ut.getRole().toString())
 				.mailValidate(ut.getValidate())

@@ -24,7 +24,7 @@ public class UploadController {
 	private final IUploadServices uplS;
 	private final IMessageServices msgS;
 	
-	@PostMapping(value = "/image", consumes = "multipart/form-data")
+	@PostMapping(value = "/admin/image", consumes = "multipart/form-data")
 	public ResponseEntity<Resp> uploadImage(
 			@RequestParam MultipartFile file,
 			@RequestParam Integer id) {
@@ -52,7 +52,7 @@ public class UploadController {
 		 }
 	 }
 	
-	@GetMapping("getUrl")
+	@GetMapping("/admin/getUrl")
 	public ResponseEntity<Resp> getUrl(@RequestParam (required = true) String filename) {
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;

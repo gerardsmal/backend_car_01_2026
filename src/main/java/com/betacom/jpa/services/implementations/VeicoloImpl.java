@@ -3,11 +3,16 @@ package com.betacom.jpa.services.implementations;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.betacom.jpa.dto.input.VeicoloReq;
 import com.betacom.jpa.dto.output.VeicoloDTO;
+import com.betacom.jpa.dto.page.PageResponseDTO;
 import com.betacom.jpa.exceptions.AcademyException;
 import com.betacom.jpa.mappers.VeicoloMapper;
 import com.betacom.jpa.models.Categorie;
@@ -155,6 +160,38 @@ public class VeicoloImpl  implements IVeicoliServices{
 				.orElseThrow(() -> new AcademyException(msgS.get("veicolo_ntfnd")));
 		
 		return veiM.builVeicoloDTO(v);
+	}
+
+	@Override
+	public PageResponseDTO<VeicoloDTO> findByPage(Integer page, Integer size,  String sortBy, String direction,Integer id, Integer tipo,
+			String categoria, String alimentazione, Integer colore, Integer marca, String targa, Integer porte) {
+		log.debug("findByPage page:{} size:{} {}/{}/{}/{}/{}/{}/{}/{}",page, size, id, tipo, categoria, alimentazione, colore, marca, targa, porte);
+		if (page == null) page=0;
+		if (size == null) size=5;
+		if (sortBy == null) sortBy = "id";
+		if (direction == null) direction = "desc";
+		
+	    Sort.Direction sortDirection =
+	            "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+		
+	    Pageable pageable = PageRequest.of(
+	    		page,
+	    		size,
+	            Sort.by(sortDirection, sortBy)
+	        );
+	    Page<Veicolo> result = veR.searchByFilterPaging(id, tipo, categoria, alimentazione, colore, marca, targa, porte, pageable);
+	    
+	    return PageResponseDTO.<VeicoloDTO>builder()
+	    	    .content(veiM.builVeicoloDTO(result.getContent()))
+	    	    .page(result.getNumber())
+	    	    .size(result.getSize())
+	    	    .totalElements(result.getTotalElements())
+	    	    .totalPages(result.getTotalPages())
+	    	    .first(result.isFirst())
+	    	    .last(result.isLast())
+	    	    .build();
+	    
 	}
 
 }

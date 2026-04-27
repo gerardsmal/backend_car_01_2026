@@ -6,9 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.betacom.jpa.enums.Roles;
 import com.betacom.jpa.models.Utente;
-
-import enums.Roles;
 
 public interface IUtenteRepository extends JpaRepository<Utente, String>{
 	

@@ -28,7 +28,7 @@ public class MacchinaController {
 	private final IMessageServices   msgS;
 	
 	
-	@PostMapping("/create")
+	@PostMapping("/admin/create")
 	public ResponseEntity<Resp> create(@RequestBody(required = true)  MacchinaReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -42,7 +42,7 @@ public class MacchinaController {
 		return ResponseEntity.status(status).body(r);		
 	}
 
-	@PutMapping("/update")
+	@PutMapping("/admin/update")
 	public ResponseEntity<Resp> update(@RequestBody(required = true)  MacchinaReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -57,7 +57,7 @@ public class MacchinaController {
 	}
 
 	
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/admin/delete/{id}")
 	public ResponseEntity<Resp> delete(@PathVariable(required = true)  Integer id){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;

@@ -5,7 +5,7 @@ import java.util.List;
 import com.betacom.jpa.dto.input.LoginReq;
 import com.betacom.jpa.dto.input.UtenteReq;
 import com.betacom.jpa.dto.input.ChangePwdReq;
-import com.betacom.jpa.dto.output.LoginDTO;
+import com.betacom.jpa.dto.output.MeDTO;
 import com.betacom.jpa.dto.output.UtenteDTO;
 
 
@@ -20,7 +20,7 @@ public interface IUtenteServices {
 	void sendResetPssword(String userName) throws Exception;
 	void resetPssword(ChangePwdReq req) throws Exception;
 	
-	LoginDTO login(LoginReq req) throws Exception;
+	MeDTO login(LoginReq req) throws Exception;
 	List<UtenteDTO> list(String userName, String nome, String cognome, String role);
 	UtenteDTO getByUserName(String userName) throws Exception;
 }
