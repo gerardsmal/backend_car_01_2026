@@ -4,4 +4,5 @@ import org.springframework.security.core.Authentication;
 
 public interface JwtServices {
 	String generateAccessToken(Authentication authentication);
+	String generateAccessTokenFromUsername(String username);
 }

@@ -39,6 +39,7 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
             	.requestMatchers("/rest/auth/login").permitAll()
+            	.requestMatchers("/rest/auth/refresh").permitAll()
                 .requestMatchers("/rest/utente/public/**").permitAll()
                 .requestMatchers("/rest/categoria/public/**").permitAll()
                 .requestMatchers("/rest/colore/public/**").permitAll()
@@ -46,6 +47,8 @@ public class SecurityConfig {
                 .requestMatchers("/rest/tipoVeicolo/public/**").permitAll()
                 .requestMatchers("/rest/marca/public/**").permitAll()
                 .requestMatchers("/rest/veicolo/public/**").permitAll()
+                .requestMatchers("/rest/veicolo/public/**").permitAll()
+                .requestMatchers("/images/**").permitAll() 
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
 
                 .requestMatchers("/rest/utente/admin/**").hasRole("ADMIN")

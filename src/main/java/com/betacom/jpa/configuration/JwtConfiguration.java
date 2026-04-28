@@ -39,7 +39,9 @@ public class JwtConfiguration {
 
         return converter;
     }
-
+    /*
+     * Policy CORS
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

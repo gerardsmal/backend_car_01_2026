@@ -6,12 +6,17 @@ import java.util.List;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.betacom.jpa.models.Utente;
+import com.betacom.jpa.repositories.IUtenteRepository;
 import com.betacom.jpa.security.interfaces.JwtServices;
+import com.betacom.jpa.services.interfaces.IMessageServices;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -22,6 +27,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class JwtImpl implements JwtServices{
+	
+	@Autowired
+	IUtenteRepository utR;
+	
+	@Autowired
+	IMessageServices msgS;
+	
+	
+	@Value("${app.jwt.access-token-expiration-seconds}")
+	private long accessTokenExpirationSeconds;
 	
 	private final SecretKey key;    // la secret key é messa dentro il file di properties. Si fa generare
 									// Linux/Mac : openssl rand -base64 64
@@ -56,13 +71,31 @@ public class JwtImpl implements JwtServices{
                 .subject(authentication.getName())
                 .claim("roles", roles)
                 .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusSeconds(900)))
+                .expiration(Date.from(now.plusSeconds(accessTokenExpirationSeconds)))
                 .signWith(key, Jwts.SIG.HS512)
                 .compact();
         
         log.debug("Token : {}",t);
         
         return t;
+	}
+
+	@Override
+	public String generateAccessTokenFromUsername(String username) {
+		log.debug("generateAccessTokenFromUsername {}", username);
+		  
+		Instant now = Instant.now();
+		
+		Utente ut = utR.findById(username)
+				.orElseThrow(() -> new UsernameNotFoundException(msgS.get("login_invalid")));
+		
+		 return Jwts.builder()
+			        .subject(username)
+			        .claim("roles","ROLE_"  + ut.getRole().toString())
+			        .issuedAt(Date.from(now))
+			        .expiration(Date.from(now.plusSeconds(accessTokenExpirationSeconds))) 
+			        .signWith(key, Jwts.SIG.HS512)
+			        .compact();
 	}
 
 }
