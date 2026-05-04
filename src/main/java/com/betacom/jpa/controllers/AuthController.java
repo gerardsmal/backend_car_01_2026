@@ -86,10 +86,11 @@ public class AuthController {
     }
   
     /*
-     * in questo caso il parametro lo ricevo come cookie
+     * in questo caso il parametro  ricevo come cookie il token
      */
     @PostMapping("/refresh")
-    public ResponseEntity<Object> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
+    public ResponseEntity<Object> refresh(
+    		@CookieValue(name = "refresh_token", required = false) String refreshToken) {
     	HttpStatus status = HttpStatus.OK;
     	Object r = new Object();
     	try {
@@ -114,6 +115,27 @@ public class AuthController {
     	 return ResponseEntity.status(status).body(r);
     }
     
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(
+            @CookieValue(name = "refresh_token", required = false) String refreshToken,
+            HttpServletResponse response) {
+    	
+        if (refreshToken != null) {
+            refreshTokenService.revokeToken(refreshToken);
+        }
+
+        ResponseCookie deleteCookie = ResponseCookie.from("refresh_token", "")
+            .httpOnly(true)
+            .secure(false) // true in produzione HTTPS
+            .sameSite("Lax")
+            .path("/rest/auth")
+            .maxAge(0)
+            .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, deleteCookie.toString());
+
+        return ResponseEntity.noContent().build();
+    }
     
     
 	@GetMapping("/me")

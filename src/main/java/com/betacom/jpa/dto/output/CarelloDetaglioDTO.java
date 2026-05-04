@@ -14,6 +14,7 @@ public class CarelloDetaglioDTO {
 	private LocalDate dataCreazione;
 	private Integer veicoloID;
 	private String modello;
+	private String tipoVeicolo;
 	private String image;
 	private String marca;
 	private String categoria;

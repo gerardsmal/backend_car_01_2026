@@ -175,6 +175,7 @@ public class UtenteImpl implements IUtenteServices{
 				.id(ut.getUserName())
 				.role(ut.getRole().toString())
 				.mailValidate(ut.getValidate())
+				.carelloSize(ut.getCarello() == null ? 0 : ut.getCarello().getRigaCarello().size())
 				.build();
 	}
 	

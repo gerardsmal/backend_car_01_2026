@@ -11,4 +11,5 @@ public class MeDTO {
 	private String id;
 	private String role;
 	private Boolean mailValidate;
+	private Integer carelloSize;
 }
