@@ -128,6 +128,11 @@
 			<version>0.13.0</version>
 			<scope>runtime</scope>
 		</dependency>
+		<!--  dipendenza vector (postgres) per springboot-->
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-vector</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
