@@ -24,6 +24,10 @@ import io.jsonwebtoken.security.Keys;
 
 @Configuration
 public class JwtConfiguration {
+
+	@Value("${app.cors.allowed-origins}")
+	private List<String> allowedOrigins;
+	
 	 /*
      * converter per dire a Spring Security di leggere roles
      */
@@ -46,7 +50,7 @@ public class JwtConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

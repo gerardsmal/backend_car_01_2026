@@ -42,9 +42,6 @@ public class AuthController {
     private final JwtServices jwtService;
     private final IRefreshTokenServices refreshTokenService;
 
-
-	
-	
 	
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginReq request,  HttpServletResponse response) {
