@@ -7,13 +7,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-<<<<<<< HEAD
-=======
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CookieValue;
->>>>>>> security
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,12 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.betacom.jpa.dto.input.LoginReq;
+import com.betacom.jpa.dto.output.LoginDTO;
 import com.betacom.jpa.response.Resp;
-<<<<<<< HEAD
-=======
 import com.betacom.jpa.security.interfaces.IRefreshTokenServices;
 import com.betacom.jpa.security.interfaces.JwtServices;
->>>>>>> security
 import com.betacom.jpa.services.interfaces.IMessageServices;
 import com.betacom.jpa.services.interfaces.IUtenteServices;
 
@@ -43,11 +38,6 @@ public class AuthController {
 	private final CustomUserDetailsService customUserDetailsService;
 	private final IUtenteServices utS;
 	private final IMessageServices msgS;
-<<<<<<< HEAD
-
-	@PostMapping("/login")
-	public ResponseEntity<Object> me (@RequestBody(required = true)  LoginReq req){
-=======
 	private final AuthenticationManager authenticationManager;
     private final JwtServices jwtService;
     private final IRefreshTokenServices refreshTokenService;
@@ -147,7 +137,6 @@ public class AuthController {
     
 	@GetMapping("/me")
 	public ResponseEntity<Object> me (Authentication authentication){
->>>>>>> security
 		Object r = new Object();
 		HttpStatus status = HttpStatus.OK;
 		try {
