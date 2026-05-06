@@ -2,13 +2,16 @@ package com.betacom.jpa.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.jpa.dto.input.CarelloReq;
@@ -22,18 +25,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping ("rest/carello")
+@RequestMapping("rest/carello")
 public class CarelloController {
 	
 	private final ICarelloServices carS;
 	private final IMessageServices msgS;
 
 	
-	@PostMapping("/addRiga")
-	public ResponseEntity<Resp> addRiga(@RequestBody(required = true)  CarelloReq req){
+	@PostMapping("/user/addRiga")
+	public ResponseEntity<Resp> addRiga(Authentication authentication,@RequestBody(required = true)  CarelloReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
 		try {
+			String username = authentication.getName();
+			req.setUtenteID(username);
 			carS.addRiga(req);
 			r.setMsg(msgS.get("rest_created"));
 		} catch (Exception e) {
@@ -43,11 +48,13 @@ public class CarelloController {
 		return ResponseEntity.status(status).body(r);		
 	}
 
-	@PatchMapping("/updateRiga")
-	public ResponseEntity<Resp> updateRiga(@RequestBody(required = true)  CarelloReq req){
+	@PatchMapping("/user/updateRiga")
+	public ResponseEntity<Resp> updateRiga(Authentication authentication,@RequestBody(required = true)  CarelloReq req){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
 		try {
+			String username = authentication.getName();
+			req.setUtenteID(username);
 			carS.updateRiga(req);
 			r.setMsg(msgS.get("rest_updated"));
 		} catch (Exception e) {
@@ -57,7 +64,7 @@ public class CarelloController {
 		return ResponseEntity.status(status).body(r);		
 	}
 
-	@DeleteMapping("/deleteRiga/{id}")
+	@DeleteMapping("/user/deleteRiga/{id}")
 	public ResponseEntity<Resp> delete(@PathVariable(required = true)  Integer id){
 		Resp r = new Resp();
 		HttpStatus status = HttpStatus.OK;
@@ -69,5 +76,20 @@ public class CarelloController {
 			status = HttpStatus.BAD_REQUEST;
 		}
 		return ResponseEntity.status(status).body(r);		
+	}
+	
+	@GetMapping("/user/list")
+	public ResponseEntity<Object> list(Authentication authentication){
+		Object r = new Object();
+		HttpStatus status = HttpStatus.OK;
+		try {
+			String username = authentication.getName();
+			r=carS.getCarello(username);
+		} catch (Exception e) {
+			r=e.getMessage();
+			status = HttpStatus.BAD_REQUEST;
+		}
+		return ResponseEntity.status(status).body(r);
+		
 	}
 }

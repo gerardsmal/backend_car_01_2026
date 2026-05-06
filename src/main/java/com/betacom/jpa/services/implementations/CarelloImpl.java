@@ -10,6 +10,7 @@ import com.betacom.jpa.dto.input.CarelloReq;
 import com.betacom.jpa.dto.output.CarelloDTO;
 import com.betacom.jpa.enums.StatoCarello;
 import com.betacom.jpa.exceptions.AcademyException;
+import com.betacom.jpa.mappers.CarelloMapper;
 import com.betacom.jpa.models.Carello;
 import com.betacom.jpa.models.RigaCarello;
 import com.betacom.jpa.models.Utente;
@@ -34,6 +35,8 @@ public class CarelloImpl implements ICarelloServices{
 	private final IUtenteRepository  utenteR;
 	private final IVeicoloRepository veicoloR;
 	private final IMessageServices msgS;
+	private final CarelloMapper mapperC;
+	
 	
 	@Transactional (rollbackFor = AcademyException.class)
 	@Override
@@ -113,7 +116,9 @@ public class CarelloImpl implements ICarelloServices{
 		Utente ut = utenteR.findById(userName)
 				.orElseThrow(() -> new AcademyException(msgS.get("user_ntfnd")));
 		
-		return null;
+		
+		
+		return mapperC.builCarelloDTO(ut);
 	}
 
 }

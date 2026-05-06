@@ -20,7 +20,7 @@ public interface IUtenteServices {
 	void sendResetPssword(String userName) throws Exception;
 	void resetPssword(ChangePwdReq req) throws Exception;
 	
-	MeDTO login(LoginReq req) throws Exception;
+	MeDTO me(String id) throws Exception;
 	List<UtenteDTO> list(String userName, String nome, String cognome, String role);
 	UtenteDTO getByUserName(String userName) throws Exception;
 }

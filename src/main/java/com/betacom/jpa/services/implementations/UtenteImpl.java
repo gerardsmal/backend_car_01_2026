@@ -166,17 +166,16 @@ public class UtenteImpl implements IUtenteServices{
 	}
 
 	@Override
-	public MeDTO login(LoginReq req) throws Exception {
-		log.debug("login {}", req);
-		Utente ut = utR.findById(req.getUserName())
+	public MeDTO me(String id) throws Exception {
+		log.debug("me {}", id);
+		Utente ut = utR.findById(id)
 				.orElseThrow(() -> new AcademyException(msgS.get("login_invalid")));
-		if (!encoder.matches(req.getPwd(), ut.getPwd()))
-			throw new AcademyException(msgS.get("login_invalid"));
 		
 		return MeDTO.builder()
 				.id(ut.getUserName())
 				.role(ut.getRole().toString())
 				.mailValidate(ut.getValidate())
+				.carelloSize(ut.getCarello() == null ? 0 : ut.getCarello().getRigaCarello().size())
 				.build();
 	}
 	
